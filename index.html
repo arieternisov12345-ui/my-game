@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Угадай Аниме: Мобильная игра</title>
+    <title>Угадай Аниме: Викторина</title>
     <style>
         body {
             background-color: #1a1a2e;
@@ -24,27 +24,17 @@
         }
         h1 { color: #e94560; font-size: 22px; margin-bottom: 5px; }
         p { color: #b2bec3; font-size: 13px; }
-        .anime-hint {
-            font-size: 16px;
-            color: #00cec9;
+        .anime-image-box {
+            width: 100%;
+            height: 180px;
             background: #0f3460;
-            padding: 10px;
-            border-radius: 8px;
+            border-radius: 12px;
             margin: 15px 0;
-            font-weight: bold;
-        }
-        .word-slot {
-            font-size: 22px;
-            letter-spacing: 4px;
-            margin: 15px 0;
-            background: #1a1a2e;
-            padding: 12px;
-            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
             border: 2px dashed #e94560;
-            color: #55efc4;
-            font-weight: bold;
-            min-height: 25px;
-            word-break: break-all;
         }
         .message {
             font-size: 14px;
@@ -52,40 +42,25 @@
             margin: 10px 0;
             font-weight: bold;
         }
-        .letters {
+        .options {
             display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 8px;
+            flex-direction: column;
+            gap: 10px;
             margin: 15px 0;
         }
-        .letter-btn {
+        .option-btn {
             background: #0f3460;
             color: white;
-            border: none;
-            width: 44px;
-            height: 44px;
-            font-size: 18px;
+            border: 2px solid #e94560;
+            padding: 12px;
+            font-size: 16px;
             font-weight: bold;
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            transition: 0.1s;
-        }
-        .letter-btn:active { transform: scale(0.9); background: #e94560; }
-        .btn {
-            background: #e94560;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 14px;
             border-radius: 8px;
             cursor: pointer;
-            font-weight: bold;
-            margin: 5px;
+            transition: 0.2s;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        .btn-green { background: #27ae60; }
+        .option-btn:active { transform: scale(0.98); background: #e94560; }
         .score { font-size: 15px; color: #fdcb6e; margin-bottom: 10px; font-weight: bold; }
     </style>
 </head>
@@ -93,113 +68,81 @@
 
     <div class="container">
         <h1>Угадай Аниме</h1>
-        <p>Отгадай название аниме по подсказке!</p>
+        <p>Выберите правильное название аниме!</p>
         
         <div class="score">Уровень: <span id="level">1</span> | Очки: <span id="score">0</span></div>
         
-        <div class="anime-hint" id="animeHint">Подсказка загружается...</div>
+        <!-- Аниме сүрөтү же эмодзи көрсөтүлө турган жер -->
+        <div class="anime-image-box" id="animeEmoji">👺</div>
         
-        <div class="word-slot" id="currentWord">___</div>
         <div class="message" id="msgText"></div>
         
-        <div class="letters" id="letterContainer">
-            <!-- Буквы выводятся динамически -->
-        </div>
-
-        <div>
-            <button class="btn btn-green" onclick="checkWord()">Проверить</button>
-            <button class="btn" onclick="clearWord()">Сбросить</button>
-        </div>
+        <!-- 4 вариант аттары -->
+        <div class="options" id="optionsContainer"></div>
     </div>
 
     <script>
-        // База данных аниме уровней
+        // Анимелер базасы: сүрөт ордуна эмодзи/символ, туура жооп жана 4 вариант
         const levels = [
-            { hint: "Парень с тетрадью смерти, бог света", word: "ТЕТРАДЬСМЕРТИ" },
-            { hint: "Ниндзя, который мечтает стать Хокаге", word: "НАРУТО" },
-            { hint: "Пират в соломенной шляпе, ищет Ван Пис", word: "ВАНПИС" },
-            { hint: "Охотник на демонов с мечом и шрамом", word: "КЛИНКАССЕКАЮЩИЙДЕМОНОВ" },
-            { hint: "Гиганты пожирают людей, стены защищают человечество", word: "АТАКААТИТАНОВ" },
-            { hint: "Парень с супер-ударом один удар (One Punch)", word: "ВАНПАНЧМЕН" },
-            { hint: "Шинигами, ученик школы и духи", word: "БЛИЧ" },
-            { hint: "Волейбол, старшая школа Карасуно", `word`: "ВОЛЕЙБОЛ" }
+            { emoji: "📓🖊️", correct: "Тетрадь Смерти", options: ["Наруто", "Тетрадь Смерти", "Блич", "Ван Пис"] },
+            { emoji: "🍜🍥", correct: "Наруто", options: ["Наруто", "Атака Титанов", "Ванпанчмен", "Токийский Гуль"] },
+            { emoji: "⚔️🔥", correct: "Клинок, рассекающий демонов", options: ["Магическая битва", "Клинок, рассекающий демонов", "Блич", "Хвост Феи"] },
+            { emoji: "💀🧱", correct: "Атака Титанов", options: ["Клинок, рассекающий демонов", "Атака Титанов", "Морской бой", "Тетрадь Смерти"] },
+            { emoji: "👊⚡", correct: "Ванпанчмен", options: ["Наруто", "Ван Пис", "Ванпанчмен", "Блич"] },
+            { emoji: "🏴‍☠️👒", correct: "Ван Пис", options: ["Ван Пис", "Пираты Карибского моря", "Блич", "Хантер х Хантер"] }
         ];
 
         let currentLevelIndex = 0;
         let score = 0;
-        let selectedWord = "";
 
         function loadLevel() {
-            selectedWord = "";
             let currentObj = levels[currentLevelIndex];
             
-            document.getElementById("animeHint").innerText = "💡 Подсказка: " + currentObj.hint;
-            document.getElementById("currentWord").innerText = "_".repeat(currentObj.word.length);
+            document.getElementById("animeEmoji").innerText = currentObj.emoji;
             document.getElementById("level").innerText = currentLevelIndex + 1;
             document.getElementById("score").innerText = score;
+            document.getElementById("msgText").innerText = "";
 
-            let container = document.getElementById("letterContainer");
+            let container = document.getElementById("optionsContainer");
             container.innerHTML = "";
 
-            // Перемешиваем буквы правильного слова + добавляем пару случайных
-            let lettersArr = currentObj.word.split("");
-            let extraLetters = ["А", "О", "И", "Е", "Н", "Т", "С", "Р"];
-            for(let i = 0; i < 3; i++) {
-                lettersArr.push(extraLetters[Math.floor(Math.random() * extraLetters.length)]);
-            }
-            lettersArr.sort(() => Math.random() - 0.5);
+            // Варианттарды аралаштыруу
+            let shuffledOptions = [...currentObj.options];
+            shuffledOptions.sort(() => Math.random() - 0.5);
 
-            lettersArr.forEach(letter => {
+            shuffledOptions.forEach(optionText => {
                 let btn = document.createElement("button");
-                btn.className = "letter-btn";
-                btn.innerText = letter;
-                btn.onclick = () => addLetter(letter, currentObj.word.length);
+                btn.className = "option-btn";
+                btn.innerText = optionText;
+                btn.onclick = () => checkAnswer(optionText, currentObj.correct, btn);
                 container.appendChild(btn);
             });
         }
 
-        function addLetter(letter, maxLength) {
-            let currentObj = levels[currentLevelIndex];
-            
-            if (selectedWord.length < currentObj.word.length) {
-                selectedWord += letter;
-                let displayStr = selectedWord + "_".repeat(currentObj.word.length - selectedWord.length);
-                document.getElementById("currentWord").innerText = displayStr;
-            }
-        }
-
-        function clearWord() {
-            selectedWord = "";
-            let currentObj = levels[currentLevelIndex];
-            document.getElementById("currentWord").innerText = "_".repeat(currentObj.word.length);
-            document.getElementById("msgText").innerText = "";
-        }
-
-        function checkWord() {
-            let currentObj = levels[currentLevelIndex];
+        function checkAnswer(selected, correct, btn) {
             let msg = document.getElementById("msgText");
             
-            if (selectedWord === currentObj.word) {
-                score += 20;
+            if (selected === correct) {
+                score += 15;
                 msg.style.color = "#2ecc71";
-                msg.innerText = "Верно! Отлично знаешь аниме!";
-                currentLevelIndex++;
+                msg.innerText = "Верно! Отлично!";
+                btn.style.background = "#27ae60";
                 
+                currentLevelIndex++;
                 setTimeout(() => {
-                    msg.innerText = "";
                     if (currentLevelIndex < levels.length) {
                         loadLevel();
                     } else {
                         msg.style.color = "#fdcb6e";
-                        msg.innerText = "Поздравляем! Ты настоящий отаку!";
+                        msg.innerText = "Поздравляем! Вы прошли всю викторину!";
                         currentLevelIndex = 0;
                         setTimeout(loadLevel, 3000);
                     }
-                }, 1200);
+                }, 1000);
             } else {
                 msg.style.color = "#e94560";
-                msg.innerText = "Неправильно! Попробуй еще.";
-                setTimeout(() => { clearWord(); }, 1200);
+                msg.innerText = "Неправильно! Попробуйте снова.";
+                btn.style.background = "#c0392b";
             }
         }
 
