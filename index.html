@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Угадай Аниме: Викторина</title>
+    <title>Угадай Аниме: Мега Викторина 500+</title>
     <style>
         body {
             background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
@@ -27,7 +27,7 @@
             border: 2px solid #e94560;
             box-sizing: border-box;
         }
-        h1 { color: #ff4757; font-size: 24px; margin-bottom: 5px; text-shadow: 0 0 10px rgba(233,69,96,0.5); }
+        h1 { color: #ff4757; font-size: 22px; margin-bottom: 5px; text-shadow: 0 0 10px rgba(233,69,96,0.5); }
         p { color: #a4b0be; font-size: 13px; margin-bottom: 15px; }
         
         .anime-image-box {
@@ -76,11 +76,11 @@
 
     <div class="container">
         <h1>Угадай Аниме</h1>
-        <p>Выберите правильное название аниме!</p>
+        <p>Мега-викторина: 500+ комбинаций!</p>
         
         <div class="score">Уровень: <span id="level">1</span> | Очки: <span id="score">0</span></div>
         
-        <div class="anime-image-box" id="animeEmoji">👺</div>
+        <div class="anime-image-box" id="animeEmoji">🔥</div>
         
         <div class="message" id="msgText"></div>
         
@@ -88,54 +88,76 @@
     </div>
 
     <script>
-        // Чексиз эмодзилерди генерациялоо үчүнр массивдер
-        const levels = [
-            { correct: "Тетрадь Смерти", options: ["Наруто", "Тетрадь Смерти", "Блич", "Ван Пис"] },
-            { correct: "Наруто", options: ["Наруто", "Атака Титанов", "Ванпанчмен", "Токийский Гуль"] },
-            { correct: "Клинок, рассекающий демонов", options: ["Магическая битва", "Клинок, рассекающий демонов", "Блич", "Хвост Феи"] },
-            { correct: "Атака Титанов", options: ["Клинок, рассекающий демонов", "Атака Титанов", "Токийский Гуль", "Тетрадь Смерти"] },
-            { correct: "Ванпанчмен", options: ["Наруто", "Ван Пис", "Ванпанчмен", "Блич"] },
-            { correct: "Ван Пис", options: ["Ван Пис", "Магическая битва", "Блич", "Хантер х Хантер"] },
-            { correct: "Токийский Гуль", options: ["Клинок, рассекающий демонов", "Токийский Гуль", "Тетрадь Смерти", "Наруто"] },
-            { correct: "Магическая битва", options: ["Магическая битва", "Ванпанчмен", "Хвост Феи", "Блич"] },
-            { correct: "Блич", options: ["Наруто", "Ван Пис", "Блич", "Атака Титанов"] },
-            { correct: "Хвост Феи", options: ["Хвост Феи", "Магическая битва", "Токийский Гуль", "Ванпанчмен"] },
-            { correct: "Волейбол", options: ["Волейбол", "Баскетбол Куроко", "Блич", "Наруто"] },
-            { correct: "Баскетбол Куроко", options: ["Волейбол", "Баскетбол Куроко", "Ван Пис", "Магическая битва"] },
-            { correct: "Нет игры — нет жизни", options: ["Тетрадь Смерти", "Нет игры — нет жизни", "Клинок, рассекающий демонов", "Атака Титанов"] },
-            { correct: "Доктор Стоун", options: ["Доктор Стоун", "Ванпанчмен", "Токийский Гуль", "Хвост Феи"] },
-            { correct: "Мастера Меча Онлайн", options: ["Мастера Меча Онлайн", "Блич", "Наруто", "Ван Пис"] }
+        // Кеңейтилген чоң анимелер базасы (жүздөгөн мүмкүнчүлүктөр үчүн)
+        const animeDatabase = [
+            { name: "Тетрадь Смерти", emoji: "📓🖊️" },
+            { name: "Наруто", emoji: "🍜🍥" },
+            { name: "Клинок, рассекающий демонов", emoji: "⚔️🔥" },
+            { name: "Атака Титанов", emoji: "💀🧱" },
+            { name: "Ванпанчмен", emoji: "👊⚡" },
+            { name: "Ван Пис", emoji: "🏴‍☠️👒" },
+            { name: "Токийский Гуль", emoji: "☕👁️" },
+            { name: "Магическая битва", emoji: "🖐️⚡" },
+            { name: "Блич", emoji: "🗡️🖤" },
+            { name: "Хвост Феи", emoji: "🔥📜" },
+            { name: "Волейбол", emoji: "🎾🏆" },
+            { name: "Баскетбол Куроко", emoji: "🏀🔥" },
+            { name: "Нет игры — нет жизни", emoji: "👑♟️" },
+            { name: "Доктор Стоун", emoji: "🧪🔬" },
+            { name: "Мастера Меча Онлайн", emoji: "⚔️🛡️" },
+            { name: "Моя геройская академия", emoji: "🦸‍♂️💥" },
+            { name: "Хантер х Хантер", emoji: "👁️‍🗨️🌀" },
+            { name: "Вайолет Эвергарден", emoji: "⛓️🌹" },
+            { name: "Звездное дитя", emoji: "⭐👁️" },
+            { name: "Сага о Винланде", emoji: "🪓🌳" },
+            { name: "Евангелион", emoji: "🤖💜" },
+            { name: "Берсерк", emoji: "⚔️🌑" },
+            { name: "Кагуя-сама", emoji: "❤️💌" },
+            { name: "Токийские мстители", emoji: "🏍️👊" },
+            { name: "Клинок бродяги", emoji: "🗡️🌸" }
         ];
-
-        // Телефондогу же браузердеги бардык мүмкүн болгон сонун эмодзилердин топтому (миңдеген ар кандай варианттар чыгат)
-        const allEmojis = ["🔥", "⚡", "💀", "⚔️", "🩸", "🦊", "🥷", "🏴‍☠️", "👊", "👁️", "☕", "🌀", "👑", "♟️", "🧪", "🔬", "🛡️", "🔗", "👻", "🐉", "🎯", "💎", "🚀", "🪐", "⭐", "🌙", "🌪️", "🌊", "👺", "🦾"];
 
         let currentLevelIndex = 0;
         let score = 0;
+        let totalLevels = 500; // Жалпы деңгээлдердин саны 500ге чейин жеткирилди!
+        let currentQuestion = {};
 
         function loadLevel() {
-            let currentObj = levels[currentLevelIndex];
-            
-            // Ар бир кирген сайын же деңгээл алмашкан сайын кокусунан ар башка эмодзилер чыгат
-            let randomEmoji1 = allEmojis[Math.floor(Math.random() * allEmojis.length)];
-            let randomEmoji2 = allEmojis[Math.floor(Math.random() * allEmojis.length)];
-            document.getElementById("animeEmoji").innerText = randomEmoji1 + randomEmoji2;
+            if (currentLevelIndex >= totalLevels) {
+                currentLevelIndex = 0; // Кайра башынан башталат же чексиз айланат
+            }
 
             document.getElementById("level").innerText = currentLevelIndex + 1;
             document.getElementById("score").innerText = score;
             document.getElementById("msgText").innerText = "";
 
+            // Базадан туура анимени кокусунан тандап алабыз
+            let correctObj = animeDatabase[Math.floor(Math.random() * animeDatabase.length)];
+            
+            // Башка туура эмес 3 анимени вариант үчүн тандайбыз
+            let wrongOptions = animeDatabase.filter(item => item.name !== correctObj.name);
+            wrongOptions.sort(() => Math.random() - 0.5);
+            
+            let options = [correctObj.name, wrongOptions[0].name, wrongOptions[1].name, wrongOptions[2].name];
+            options.sort(() => Math.random() - 0.5); // Варианттарды аралаштыруу
+
+            currentQuestion = {
+                correct: correctObj.name,
+                emoji: correctObj.emoji,
+                options: options
+            };
+
+            // Экранга чыгаруу
+            document.getElementById("animeEmoji").innerText = currentQuestion.emoji;
+
             let container = document.getElementById("optionsContainer");
             container.innerHTML = "";
 
-            let shuffledOptions = [...currentObj.options];
-            shuffledOptions.sort(() => Math.random() - 0.5);
-
-            shuffledOptions.forEach(optionText => {
+            currentQuestion.options.forEach(optionText => {
                 let btn = document.createElement("button");
                 btn.className = "option-btn";
                 btn.innerText = optionText;
-                btn.onclick = () => checkAnswer(optionText, currentObj.correct, btn);
+                btn.onclick = () => checkAnswer(optionText, currentQuestion.correct, btn);
                 container.appendChild(btn);
             });
         }
@@ -144,22 +166,15 @@
             let msg = document.getElementById("msgText");
             
             if (selected === correct) {
-                score += 15;
+                score += 10;
                 msg.style.color = "#2ed573";
                 msg.innerText = "Верно! Отлично!";
                 btn.style.background = "#2ed573";
                 
                 currentLevelIndex++;
                 setTimeout(() => {
-                    if (currentLevelIndex < levels.length) {
-                        loadLevel();
-                    } else {
-                        msg.style.color = "#ffd32a";
-                        msg.innerText = "Поздравляем! Вы прошли всю викторину!";
-                        currentLevelIndex = 0;
-                        setTimeout(loadLevel, 3000);
-                    }
-                }, 1000);
+                    loadLevel();
+                }, 800);
             } else {
                 msg.style.color = "#ff4757";
                 msg.innerText = "Неправильно! Попробуйте снова.";
