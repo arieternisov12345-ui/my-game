@@ -3,140 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Black Russia: RP Life</title>
+    <title>Слова Чудес: Мобильная игра</title>
     <style>
         body {
-            background-color: #0d0d0d;
+            background-color: #1e1e2f;
             color: #ffffff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
-            padding: 15px;
+            padding: 20px;
             margin: 0;
         }
         .container {
-            max-width: 420px;
+            max-width: 400px;
             margin: auto;
-            background: #1a1a1a;
+            background: #2a2a40;
             padding: 20px;
             border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-            border: 1px solid #333;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            border: 1px solid #444;
         }
-        h1 { color: #f1c40f; font-size: 24px; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;}
-        .stats {
-            background: #252525;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            text-align: left;
-            font-size: 15px;
-            border-left: 4px solid #f1c40f;
-            line-height: 1.6;
+        h1 { color: #f1c40f; font-size: 20px; margin-bottom: 5px; }
+        p { color: #aaa; font-size: 14px; }
+        .word-slot {
+            font-size: 24px;
+            letter-spacing: 5px;
+            margin: 20px 0;
+            background: #1b1b29;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px dashed #f1c40f;
+            color: #2ecc71;
+            font-weight: bold;
         }
-        .stats b { color: #f39c12; }
+        .letters {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .letter-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: 0.1s;
+        }
+        .letter-btn:active { transform: scale(0.9); background: #2980b9; }
         .btn {
             background: #e74c3c;
             color: white;
             border: none;
-            padding: 12px 18px;
-            font-size: 15px;
-            border-radius: 10px;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 8px;
             cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
             font-weight: bold;
-            transition: 0.2s;
-            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+            margin: 5px;
         }
-        .btn:active { transform: scale(0.98); }
-        .btn-green { background: #27ae60; box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3); }
-        .btn-blue { background: #2980b9; box-shadow: 0 4px 10px rgba(41, 128, 185, 0.3); }
-        .btn-purple { background: #8e44ad; box-shadow: 0 4px 10px rgba(142, 68, 173, 0.3); }
-        .shop-section {
-            margin-top: 20px;
-            border-top: 1px solid #333;
-            padding-top: 15px;
-            text-align: left;
-        }
-        .shop-section h3 { font-size: 16px; color: #ddd; margin-bottom: 10px; }
+        .btn-green { background: #27ae60; }
+        .score { font-size: 16px; color: #f39c12; margin-bottom: 15px; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Black Russia RP</h1>
+        <h1>Слова Чудес</h1>
+        <p>Собери слово из предложенных букв!</p>
         
-        <div class="stats" id="stats">
-            👤 Игрок: <b>Aka_Belom</b><br>
-            💰 Наличные: <span id="money">5000</span> ₽<br>
-            🏦 Банк: <span id="bank">0</span> ₽<br>
-            🚗 Автомобиль: <span id="car">Пешком</span><br>
-            ⭐ Ранг / Масть: <span id="rank">Новичок</span>
+        <div class="score">Уровень: <span id="level">1</span> | Очки: <span id="score">0</span></div>
+        
+        <div class="word-slot" id="currentWord">___</div>
+        
+        <div class="letters" id="letterContainer">
+            <!-- Тамгалар динамикалык чыгат -->
         </div>
 
-        <button class="btn btn-green" onclick="work()">💼 Работать (Заработать)</button>
-        <button class="btn btn-blue" onclick="crime()">🔫 Криминал (ОПГ / Риск)</button>
-        
-        <div class="shop-section">
-            <h3>🚗 Автосалон</h3>
-            <button class="btn" onclick="buyCar('Toyota Camry 3.5', 45000)">Купить Camry 3.5 (45,000 ₽)</button>
-            <button class="btn btn-purple" onclick="buyCar('Mercedes Geländewagen', 150000)">Купить Geländewagen (150,000 ₽)</button>
+        <div>
+            <button class="btn btn-green" onclick="checkWord()">Текшерүү</button>
+            <button class="btn" onclick="clearWord()">Тазалоо</button>
         </div>
     </div>
 
     <script>
-        let money = 5000;
-        let bank = 0;
-        let car = "Пешком";
-        let rank = "Новичок (1 ранг)";
+        // Жөнөкөй деңгээлдер жана сөздөр базасы
+        const levels = [
+            { letters: ["К", "О", "Т"], words: ["КОТ", "ТОК"] },
+            { letters: ["М", "И", "Р"], words: ["МИР", "РИМ"] },
+            { letters: ["Ш", "А", "Р"], words: ["ШАР", "РАШ"] },
+            { letters: ["Д", "О", "М"], words: ["ДОМ", "МОД"] }
+        ];
 
-        function updateStats() {
-            document.getElementById("money").innerText = money.toLocaleString();
-            document.getElementById("bank").innerText = bank.toLocaleString();
-            document.getElementById("car").innerText = car;
-            document.getElementById("rank").innerText = rank;
+        let currentLevelIndex = 0;
+        let score = 0;
+        let selectedWord = "";
+
+        function loadLevel() {
+            selectedWord = "";
+            document.getElementById("currentWord").innerText = "___";
+            document.getElementById("level").innerText = currentLevelIndex + 1;
+            document.getElementById("score").innerText = score;
+
+            let container = document.getElementById("letterContainer");
+            container.innerHTML = "";
+
+            let currentLetters = levels[currentLevelIndex].letters;
+            // Тамгалардын ордун аралаштыруу
+            currentLetters.sort(() => Math.random() - 0.5);
+
+            currentLetters.forEach(letter => {
+                let btn = document.createElement("button");
+                btn.className = "letter-btn";
+                btn.innerText = letter;
+                btn.onclick = () => addLetter(letter);
+                container.appendChild(btn);
+            });
         }
 
-        function work() {
-            let earned = Math.floor(Math.random() * 2000) + 1000;
-            money += earned;
-            
-            if (money > 30000 && rank.includes("Новичок")) {
-                rank = "Свой человек (3 ранг)";
+        function addLetter(letter) {
+            if (selectedWord.length < 3) {
+                selectedWord += letter;
+                document.getElementById("currentWord").innerText = selectedWord;
             }
-            if (money > 100000) {
-                rank = "Авторитет (7 ранг)";
-            }
-            
-            updateStats();
-            alert(`Вы успешно отработали смену и заработали ${earned.toLocaleString()} ₽!`);
         }
 
-        function crime() {
-            let success = Math.random() > 0.4; // 60% шанс успеха
-            if (success) {
-                let looted = Math.floor(Math.random() * 4000) + 2000;
-                money += looted;
-                updateStats();
-                alert(`Успешное дело! Вы заработали криминальным путем ${looted.toLocaleString()} ₽.`);
+        function clearWord() {
+            selectedWord = "";
+            document.getElementById("currentWord").innerText = "___";
+        }
+
+        function checkWord() {
+            let validWords = levels[currentLevelIndex].words;
+            if (validWords.includes(selectedWord)) {
+                score += 10;
+                alert("Туура! Молодец!");
+                currentLevelIndex++;
+                if (currentLevelIndex < levels.length) {
+                    loadLevel();
+                } else {
+                    alert("Куттуктайм! Бардык деңгээлдерден өттүңүз!");
+                    currentLevelIndex = 0;
+                    loadLevel();
+                }
             } else {
-                let fine = 1500;
-                money = Math.max(0, money - fine);
-                updateStats();
-                alert(`Вас задержала полиция! Штраф ${fine} ₽.`);
+                alert("Мындай сөз жок же ката! Кайра аракет кыл.");
+                clearWord();
             }
         }
 
-        function buyCar(carName, price) {
-            if (money >= price) {
-                money -= price;
-                car = carName;
-                updateStats();
-                alert(`Поздравляем! Вы приобрели ${carName}!`);
-            } else {
-                alert("Недостаточно наличных средств! Поработайте еще.");
-            }
-        }
+        // Башталышы
+        loadLevel();
     </script>
 
 </body>
