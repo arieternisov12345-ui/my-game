@@ -6,39 +6,47 @@
     <title>Угадай Аниме: Викторина</title>
     <style>
         body {
-            background-color: #1a1a2e;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
             color: #ffffff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
             padding: 15px;
             margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .container {
+            width: 100%;
             max-width: 400px;
-            margin: auto;
-            background: #16213e;
+            background: rgba(22, 33, 62, 0.95);
             padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-            border: 1px solid #0f3460;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            border: 2px solid #e94560;
+            box-sizing: border-box;
         }
-        h1 { color: #e94560; font-size: 22px; margin-bottom: 5px; }
-        p { color: #b2bec3; font-size: 13px; }
+        h1 { color: #ff4757; font-size: 24px; margin-bottom: 5px; text-shadow: 0 0 10px rgba(233,69,96,0.5); }
+        p { color: #a4b0be; font-size: 13px; margin-bottom: 15px; }
+        
         .anime-image-box {
             width: 100%;
-            height: 180px;
-            background: #0f3460;
-            border-radius: 12px;
+            height: 150px;
+            background: linear-gradient(135deg, #1f4068, #162447);
+            border-radius: 14px;
             margin: 15px 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 40px;
-            border: 2px dashed #e94560;
+            font-size: 55px;
+            border: 2px solid #00cec9;
+            box-shadow: inset 0 0 15px rgba(0,206,201,0.3), 0 5px 15px rgba(0,0,0,0.5);
         }
+        
         .message {
-            font-size: 14px;
-            height: 22px;
+            font-size: 15px;
+            height: 24px;
             margin: 10px 0;
             font-weight: bold;
         }
@@ -49,19 +57,19 @@
             margin: 15px 0;
         }
         .option-btn {
-            background: #0f3460;
+            background: #1f4068;
             color: white;
             border: 2px solid #e94560;
             padding: 12px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             transition: 0.2s;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        .option-btn:active { transform: scale(0.98); background: #e94560; }
-        .score { font-size: 15px; color: #fdcb6e; margin-bottom: 10px; font-weight: bold; }
+        .option-btn:active { transform: scale(0.97); background: #e94560; }
+        .score { font-size: 15px; color: #ffd32a; margin-bottom: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -72,25 +80,35 @@
         
         <div class="score">Уровень: <span id="level">1</span> | Очки: <span id="score">0</span></div>
         
-        <!-- Аниме сүрөтү же эмодзи көрсөтүлө турган жер -->
         <div class="anime-image-box" id="animeEmoji">👺</div>
         
         <div class="message" id="msgText"></div>
         
-        <!-- 4 вариант аттары -->
         <div class="options" id="optionsContainer"></div>
     </div>
 
     <script>
-        // Анимелер базасы: сүрөт ордуна эмодзи/символ, туура жооп жана 4 вариант
+        // Чексиз эмодзилерди генерациялоо үчүнр массивдер
         const levels = [
-            { emoji: "📓🖊️", correct: "Тетрадь Смерти", options: ["Наруто", "Тетрадь Смерти", "Блич", "Ван Пис"] },
-            { emoji: "🍜🍥", correct: "Наруто", options: ["Наруто", "Атака Титанов", "Ванпанчмен", "Токийский Гуль"] },
-            { emoji: "⚔️🔥", correct: "Клинок, рассекающий демонов", options: ["Магическая битва", "Клинок, рассекающий демонов", "Блич", "Хвост Феи"] },
-            { emoji: "💀🧱", correct: "Атака Титанов", options: ["Клинок, рассекающий демонов", "Атака Титанов", "Морской бой", "Тетрадь Смерти"] },
-            { emoji: "👊⚡", correct: "Ванпанчмен", options: ["Наруто", "Ван Пис", "Ванпанчмен", "Блич"] },
-            { emoji: "🏴‍☠️👒", correct: "Ван Пис", options: ["Ван Пис", "Пираты Карибского моря", "Блич", "Хантер х Хантер"] }
+            { correct: "Тетрадь Смерти", options: ["Наруто", "Тетрадь Смерти", "Блич", "Ван Пис"] },
+            { correct: "Наруто", options: ["Наруто", "Атака Титанов", "Ванпанчмен", "Токийский Гуль"] },
+            { correct: "Клинок, рассекающий демонов", options: ["Магическая битва", "Клинок, рассекающий демонов", "Блич", "Хвост Феи"] },
+            { correct: "Атака Титанов", options: ["Клинок, рассекающий демонов", "Атака Титанов", "Токийский Гуль", "Тетрадь Смерти"] },
+            { correct: "Ванпанчмен", options: ["Наруто", "Ван Пис", "Ванпанчмен", "Блич"] },
+            { correct: "Ван Пис", options: ["Ван Пис", "Магическая битва", "Блич", "Хантер х Хантер"] },
+            { correct: "Токийский Гуль", options: ["Клинок, рассекающий демонов", "Токийский Гуль", "Тетрадь Смерти", "Наруто"] },
+            { correct: "Магическая битва", options: ["Магическая битва", "Ванпанчмен", "Хвост Феи", "Блич"] },
+            { correct: "Блич", options: ["Наруто", "Ван Пис", "Блич", "Атака Титанов"] },
+            { correct: "Хвост Феи", options: ["Хвост Феи", "Магическая битва", "Токийский Гуль", "Ванпанчмен"] },
+            { correct: "Волейбол", options: ["Волейбол", "Баскетбол Куроко", "Блич", "Наруто"] },
+            { correct: "Баскетбол Куроко", options: ["Волейбол", "Баскетбол Куроко", "Ван Пис", "Магическая битва"] },
+            { correct: "Нет игры — нет жизни", options: ["Тетрадь Смерти", "Нет игры — нет жизни", "Клинок, рассекающий демонов", "Атака Титанов"] },
+            { correct: "Доктор Стоун", options: ["Доктор Стоун", "Ванпанчмен", "Токийский Гуль", "Хвост Феи"] },
+            { correct: "Мастера Меча Онлайн", options: ["Мастера Меча Онлайн", "Блич", "Наруто", "Ван Пис"] }
         ];
+
+        // Телефондогу же браузердеги бардык мүмкүн болгон сонун эмодзилердин топтому (миңдеген ар кандай варианттар чыгат)
+        const allEmojis = ["🔥", "⚡", "💀", "⚔️", "🩸", "🦊", "🥷", "🏴‍☠️", "👊", "👁️", "☕", "🌀", "👑", "♟️", "🧪", "🔬", "🛡️", "🔗", "👻", "🐉", "🎯", "💎", "🚀", "🪐", "⭐", "🌙", "🌪️", "🌊", "👺", "🦾"];
 
         let currentLevelIndex = 0;
         let score = 0;
@@ -98,7 +116,11 @@
         function loadLevel() {
             let currentObj = levels[currentLevelIndex];
             
-            document.getElementById("animeEmoji").innerText = currentObj.emoji;
+            // Ар бир кирген сайын же деңгээл алмашкан сайын кокусунан ар башка эмодзилер чыгат
+            let randomEmoji1 = allEmojis[Math.floor(Math.random() * allEmojis.length)];
+            let randomEmoji2 = allEmojis[Math.floor(Math.random() * allEmojis.length)];
+            document.getElementById("animeEmoji").innerText = randomEmoji1 + randomEmoji2;
+
             document.getElementById("level").innerText = currentLevelIndex + 1;
             document.getElementById("score").innerText = score;
             document.getElementById("msgText").innerText = "";
@@ -106,7 +128,6 @@
             let container = document.getElementById("optionsContainer");
             container.innerHTML = "";
 
-            // Варианттарды аралаштыруу
             let shuffledOptions = [...currentObj.options];
             shuffledOptions.sort(() => Math.random() - 0.5);
 
@@ -124,25 +145,25 @@
             
             if (selected === correct) {
                 score += 15;
-                msg.style.color = "#2ecc71";
+                msg.style.color = "#2ed573";
                 msg.innerText = "Верно! Отлично!";
-                btn.style.background = "#27ae60";
+                btn.style.background = "#2ed573";
                 
                 currentLevelIndex++;
                 setTimeout(() => {
                     if (currentLevelIndex < levels.length) {
                         loadLevel();
                     } else {
-                        msg.style.color = "#fdcb6e";
+                        msg.style.color = "#ffd32a";
                         msg.innerText = "Поздравляем! Вы прошли всю викторину!";
                         currentLevelIndex = 0;
                         setTimeout(loadLevel, 3000);
                     }
                 }, 1000);
             } else {
-                msg.style.color = "#e94560";
+                msg.style.color = "#ff4757";
                 msg.innerText = "Неправильно! Попробуйте снова.";
-                btn.style.background = "#c0392b";
+                btn.style.background = "#ff4757";
             }
         }
 
