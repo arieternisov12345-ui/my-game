@@ -3,192 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Угадай Аниме: Мега Викторина 500+</title>
+    <title>Угадай Аниме & Скачать игру</title>
     <style>
         body {
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background: linear-gradient(135deg, #0f172a, #1e1b4b);
             color: #ffffff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            text-align: center;
-            padding: 15px;
             margin: 0;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .container {
-            width: 100%;
-            max-width: 400px;
-            background: rgba(22, 33, 62, 0.95);
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-            border: 2px solid #e94560;
-            box-sizing: border-box;
-        }
-        h1 { color: #ff4757; font-size: 22px; margin-bottom: 5px; text-shadow: 0 0 10px rgba(233,69,96,0.5); }
-        p { color: #a4b0be; font-size: 13px; margin-bottom: 15px; }
-        
-        .anime-image-box {
-            width: 100%;
-            height: 150px;
-            background: linear-gradient(135deg, #1f4068, #162447);
-            border-radius: 14px;
-            margin: 15px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 55px;
-            border: 2px solid #00cec9;
-            box-shadow: inset 0 0 15px rgba(0,206,201,0.3), 0 5px 15px rgba(0,0,0,0.5);
-        }
-        
-        .message {
-            font-size: 15px;
-            height: 24px;
-            margin: 10px 0;
-            font-weight: bold;
-        }
-        .options {
+            padding: 20px 10px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin: 15px 0;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
-        .option-btn {
-            background: #1f4068;
-            color: white;
-            border: 2px solid #e94560;
+        .game-container {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(22, 33, 62, 0.9);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        h1 {
+            font-size: 22px;
+            margin: 0 0 5px 0;
+            color: #f87171;
+        }
+        .subtitle {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 15px;
+        }
+        .stats {
+            font-size: 14px;
+            font-weight: bold;
+            color: #fbbf24;
+            margin-bottom: 15px;
+        }
+        .question-box {
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid #38bdf8;
+            border-radius: 12px;
+            padding: 20px;
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+        .btn-option {
+            display: block;
+            width: 100%;
+            background: transparent;
+            color: #ffffff;
+            border: 2px solid #f43f5e;
             padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 10px;
             font-size: 15px;
             font-weight: bold;
-            border-radius: 10px;
             cursor: pointer;
+            box-sizing: border-box;
             transition: 0.2s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        .option-btn:active { transform: scale(0.97); background: #e94560; }
-        .score { font-size: 15px; color: #ffd32a; margin-bottom: 10px; font-weight: bold; }
+        .btn-option:active {
+            background: #f43f5e;
+        }
+        .download-section {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(22, 33, 62, 0.9);
+            border-radius: 20px;
+            padding: 25px 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .download-section h2 {
+            font-size: 20px;
+            margin: 0 0 8px 0;
+            color: #f87171;
+        }
+        .download-section p {
+            color: #94a3b8;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+        .btn-download {
+            display: block;
+            width: 100%;
+            padding: 14px 0;
+            background-color: #22c55e;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            border-radius: 10px;
+            font-weight: bold;
+            box-sizing: border-box;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="game-container">
         <h1>Угадай Аниме</h1>
-        <p>Мега-викторина: 500+ комбинаций!</p>
+        <div class="subtitle">Большая база: 40+ аниме</div>
+        <div class="stats" id="stats">Уровень: 1 | Очки: 0</div>
         
-        <div class="score">Уровень: <span id="level">1</span> | Очки: <span id="score">0</span></div>
-        
-        <div class="anime-image-box" id="animeEmoji">🔥</div>
-        
-        <div class="message" id="msgText"></div>
-        
-        <div class="options" id="optionsContainer"></div>
+        <div class="question-box" id="question">
+            🔥⚡
+        </div>
+
+        <div id="options">
+            <!-- Кнопки -->
+        </div>
+        <div id="msg" style="margin-top: 10px; font-weight: bold; font-size: 14px;"></div>
+    </div>
+
+    <div class="download-section">
+        <h2>Моя игра</h2>
+        <p>Нажмите на кнопку ниже, чтобы скачать APK файл:</p>
+        <a href="https://arieternisov12345-ui.github.io/my-game/app-release.apk" download class="btn-download">Скачать игру</a>
     </div>
 
     <script>
-        // Кеңейтилген чоң анимелер базасы (жүздөгөн мүмкүнчүлүктөр үчүн)
-        const animeDatabase = [
-            { name: "Тетрадь Смерти", emoji: "📓🖊️" },
-            { name: "Наруто", emoji: "🍜🍥" },
-            { name: "Клинок, рассекающий демонов", emoji: "⚔️🔥" },
-            { name: "Атака Титанов", emoji: "💀🧱" },
-            { name: "Ванпанчмен", emoji: "👊⚡" },
-            { name: "Ван Пис", emoji: "🏴‍☠️👒" },
-            { name: "Токийский Гуль", emoji: "☕👁️" },
-            { name: "Магическая битва", emoji: "🖐️⚡" },
-            { name: "Блич", emoji: "🗡️🖤" },
-            { name: "Хвост Феи", emoji: "🔥📜" },
-            { name: "Волейбол", emoji: "🎾🏆" },
-            { name: "Баскетбол Куроко", emoji: "🏀🔥" },
-            { name: "Нет игры — нет жизни", emoji: "👑♟️" },
-            { name: "Доктор Стоун", emoji: "🧪🔬" },
-            { name: "Мастера Меча Онлайн", emoji: "⚔️🛡️" },
-            { name: "Моя геройская академия", emoji: "🦸‍♂️💥" },
-            { name: "Хантер х Хантер", emoji: "👁️‍🗨️🌀" },
-            { name: "Вайолет Эвергарден", emoji: "⛓️🌹" },
-            { name: "Звездное дитя", emoji: "⭐👁️" },
-            { name: "Сага о Винланде", emoji: "🪓🌳" },
-            { name: "Евангелион", emoji: "🤖💜" },
-            { name: "Берсерк", emoji: "⚔️🌑" },
-            { name: "Кагуя-сама", emoji: "❤️💌" },
-            { name: "Токийские мстители", emoji: "🏍️👊" },
-            { name: "Клинок бродяги", emoji: "🗡️🌸" }
+        const animeList = [
+            { name: "Наруто", emojis: "🍥🦊" },
+            { name: "Ван Пис", emojis: "🏴‍☠️👒" },
+            { name: "Атака Титанов", emojis: "⚔️🧱" },
+            { name: "Клинок, рассекающий демонов", emojis: "👺🔥" },
+            { name: "Токийский Гуль", emojis: "☕👁️" },
+            { name: "Тетрадь Смерти", emojis: "🍎📓" },
+            { name: "Блич", emojis: "⚔️👻" },
+            { name: "Магическая битва", emojis: "🤞🌀" },
+            { name: "Моя геройская академия", emojis: "🦸‍♂️💥" },
+            { name: "Ванпанчмен", emojis: "👨‍𲀦🥊" },
+            { name: "Берсерк", emojis: "🗡️🌑" },
+            { name: "Евангелион", emojis: "🤖🛑" },
+            { name: "Хвост Феи", emojis: "🧚‍♂️🔥" },
+            { name: "Клинок Бессмертного", emojis: "🩸⚔️" },
+            { name: "Черный Клевер", emojis: "🍀📖" },
+            { name: "Доктор Стоун", emojis: "🧪🔬" },
+            { name: "Человек-бензопила", emojis: "🪚😈" },
+            { name: "Клинок, рассекающий демонов", emojis: "🌊👺" },
+            { name: "Борьба в прямом эфире", emojis: "📹👊" },
+            { name: "Токийские мстители", emojis: "🏍️🕰️" },
+            { name: "Семья шпиона", emojis: "🥜🕵️‍♂️" },
+            { name: "Синий тюремный блок: Блю Лок", emojis: "⚽🥅" },
+            { name: "Клинок падшего короля", emojis: "👑⚔️" },
+            { name: "Форма голоса", emojis: "🌸🔇" },
+            { name: "Твоё имя", emojis: "☄️💫" },
+            { name: "Унесенные призраками", emojis: "🐉🏮" },
+            { name: "Ходячий замок", emojis: "🏰🧙‍♂️" },
+            { name: "Клинок времени", emojis: "⏳🗡️" },
+            { name: "Обещанная Страна Снов", emojis: "👶🚪" },
+            { name: "Баскетбол Куроко", emojis: "🏀🔥" },
+            { name: "Волейбол!!", emojis: "🏐✨" },
+            { name: "Клинок демона", emojis: "👹💤" },
+            { name: "Великий из бродячих псов", emojis: "🐅📖" },
+            { name: "Ангельские ритмы", emojis: "👼🎵" },
+            { name: "Клинок убийцы", emojis: "🗡️🖤" },
+            { name: "Оверлорд", emojis: "💀👑" },
+            { name: "Реинкарнация безработного", emojis: "🪄👶" },
+            { name: "Класс убийц", emojis: "🐙🏫" }
         ];
 
-        let currentLevelIndex = 0;
         let score = 0;
-        let totalLevels = 500; // Жалпы деңгээлдердин саны 500ге чейин жеткирилди!
-        let currentQuestion = {};
+        let level = 1;
+        let currentCorrect = "";
 
-        function loadLevel() {
-            if (currentLevelIndex >= totalLevels) {
-                currentLevelIndex = 0; // Кайра башынан башталат же чексиз айланат
+        function nextQuestion() {
+            let correctObj = animeList[Math.floor(Math.random() * animeList.length)];
+            currentCorrect = correctObj.name;
+            
+            document.getElementById("question").innerText = correctObj.emojis;
+            document.getElementById("stats").innerText = `Уровень: ${level} | Очки: ${score}`;
+            document.getElementById("msg").innerText = "";
+
+            let options = [currentCorrect];
+            while(options.length < 4) {
+                let randomObj = animeList[Math.floor(Math.random() * animeList.length)];
+                if(!options.includes(randomObj.name)) {
+                    options.push(randomObj.name);
+                }
             }
 
-            document.getElementById("level").innerText = currentLevelIndex + 1;
-            document.getElementById("score").innerText = score;
-            document.getElementById("msgText").innerText = "";
+            options.sort(() => Math.random() - 0.5);
 
-            // Базадан туура анимени кокусунан тандап алабыз
-            let correctObj = animeDatabase[Math.floor(Math.random() * animeDatabase.length)];
-            
-            // Башка туура эмес 3 анимени вариант үчүн тандайбыз
-            let wrongOptions = animeDatabase.filter(item => item.name !== correctObj.name);
-            wrongOptions.sort(() => Math.random() - 0.5);
-            
-            let options = [correctObj.name, wrongOptions[0].name, wrongOptions[1].name, wrongOptions[2].name];
-            options.sort(() => Math.random() - 0.5); // Варианттарды аралаштыруу
-
-            currentQuestion = {
-                correct: correctObj.name,
-                emoji: correctObj.emoji,
-                options: options
-            };
-
-            // Экранга чыгаруу
-            document.getElementById("animeEmoji").innerText = currentQuestion.emoji;
-
-            let container = document.getElementById("optionsContainer");
-            container.innerHTML = "";
-
-            currentQuestion.options.forEach(optionText => {
+            let optsDiv = document.getElementById("options");
+            optsDiv.innerHTML = "";
+            options.forEach(opt => {
                 let btn = document.createElement("button");
-                btn.className = "option-btn";
-                btn.innerText = optionText;
-                btn.onclick = () => checkAnswer(optionText, currentQuestion.correct, btn);
-                container.appendChild(btn);
+                btn.className = "btn-option";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(opt);
+                optsDiv.appendChild(btn);
             });
         }
 
-        function checkAnswer(selected, correct, btn) {
-            let msg = document.getElementById("msgText");
-            
-            if (selected === correct) {
+        function checkAnswer(selected) {
+            let msg = document.getElementById("msg");
+            if (selected === currentCorrect) {
+                msg.style.color = "#4ade80";
+                msg.innerText = "Правильно! 🎉";
                 score += 10;
-                msg.style.color = "#2ed573";
-                msg.innerText = "Верно! Отлично!";
-                btn.style.background = "#2ed573";
-                
-                currentLevelIndex++;
-                setTimeout(() => {
-                    loadLevel();
-                }, 800);
+                level++;
+                setTimeout(nextQuestion, 800);
             } else {
-                msg.style.color = "#ff4757";
-                msg.innerText = "Неправильно! Попробуйте снова.";
-                btn.style.background = "#ff4757";
+                msg.style.color = "#f87171";
+                msg.innerText = "Неправильно! ❌";
+                setTimeout(nextQuestion, 800);
             }
         }
 
-        loadLevel();
+        nextQuestion();
     </script>
-
 </body>
 </html>
-<div class="download-section">
-        <h2>Скачать игру</h2>
-        <p>Загрузите APK файл второй игры на ваш телефон:</p>
-        <a href="https://arieternisov12345-ui.github.io/my-game/app-release.apk" download class="btn-download">Скачать APK</a>
-</div>                    
