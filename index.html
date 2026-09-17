@@ -3,60 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Слова Чудес: Мобильная игра</title>
+    <title>Угадай Аниме: Мобильная игра</title>
     <style>
         body {
-            background-color: #1e1e2f;
+            background-color: #1a1a2e;
             color: #ffffff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
-            padding: 20px;
+            padding: 15px;
             margin: 0;
         }
         .container {
             max-width: 400px;
             margin: auto;
-            background: #2a2a40;
+            background: #16213e;
             padding: 20px;
             border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            border: 1px solid #444;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            border: 1px solid #0f3460;
         }
-        h1 { color: #f1c40f; font-size: 20px; margin-bottom: 5px; }
-        p { color: #aaa; font-size: 14px; }
-        .word-slot {
-            font-size: 24px;
-            letter-spacing: 5px;
-            margin: 20px 0;
-            background: #1b1b29;
+        h1 { color: #e94560; font-size: 22px; margin-bottom: 5px; }
+        p { color: #b2bec3; font-size: 13px; }
+        .anime-hint {
+            font-size: 16px;
+            color: #00cec9;
+            background: #0f3460;
             padding: 10px;
             border-radius: 8px;
-            border: 2px dashed #f1c40f;
-            color: #2ecc71;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        .word-slot {
+            font-size: 22px;
+            letter-spacing: 4px;
+            margin: 15px 0;
+            background: #1a1a2e;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px dashed #e94560;
+            color: #55efc4;
+            font-weight: bold;
+            min-height: 25px;
+            word-break: break-all;
+        }
+        .message {
+            font-size: 14px;
+            height: 22px;
+            margin: 10px 0;
             font-weight: bold;
         }
         .letters {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 15px 0;
         }
         .letter-btn {
-            background: #3498db;
+            background: #0f3460;
             color: white;
             border: none;
-            width: 50px;
-            height: 50px;
-            font-size: 20px;
+            width: 44px;
+            height: 44px;
+            font-size: 18px;
             font-weight: bold;
             border-radius: 50%;
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             transition: 0.1s;
         }
-        .letter-btn:active { transform: scale(0.9); background: #2980b9; }
+        .letter-btn:active { transform: scale(0.9); background: #e94560; }
         .btn {
-            background: #e74c3c;
+            background: #e94560;
             color: white;
             border: none;
             padding: 10px 20px;
@@ -65,38 +83,46 @@
             cursor: pointer;
             font-weight: bold;
             margin: 5px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
         .btn-green { background: #27ae60; }
-        .score { font-size: 16px; color: #f39c12; margin-bottom: 15px; font-weight: bold; }
+        .score { font-size: 15px; color: #fdcb6e; margin-bottom: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Слова Чудес</h1>
-        <p>Собери слово из предложенных букв!</p>
+        <h1>Угадай Аниме</h1>
+        <p>Отгадай название аниме по подсказке!</p>
         
         <div class="score">Уровень: <span id="level">1</span> | Очки: <span id="score">0</span></div>
         
+        <div class="anime-hint" id="animeHint">Подсказка загружается...</div>
+        
         <div class="word-slot" id="currentWord">___</div>
+        <div class="message" id="msgText"></div>
         
         <div class="letters" id="letterContainer">
-            <!-- Тамгалар динамикалык чыгат -->
+            <!-- Буквы выводятся динамически -->
         </div>
 
         <div>
-            <button class="btn btn-green" onclick="checkWord()">Текшерүү</button>
-            <button class="btn" onclick="clearWord()">Тазалоо</button>
+            <button class="btn btn-green" onclick="checkWord()">Проверить</button>
+            <button class="btn" onclick="clearWord()">Сбросить</button>
         </div>
     </div>
 
     <script>
-        // Жөнөкөй деңгээлдер жана сөздөр базасы
+        // База данных аниме уровней
         const levels = [
-            { letters: ["К", "О", "Т"], words: ["КОТ", "ТОК"] },
-            { letters: ["М", "И", "Р"], words: ["МИР", "РИМ"] },
-            { letters: ["Ш", "А", "Р"], words: ["ШАР", "РАШ"] },
-            { letters: ["Д", "О", "М"], words: ["ДОМ", "МОД"] }
+            { hint: "Парень с тетрадью смерти, бог света", word: "ТЕТРАДЬСМЕРТИ" },
+            { hint: "Ниндзя, который мечтает стать Хокаге", word: "НАРУТО" },
+            { hint: "Пират в соломенной шляпе, ищет Ван Пис", word: "ВАНПИС" },
+            { hint: "Охотник на демонов с мечом и шрамом", word: "КЛИНКАССЕКАЮЩИЙДЕМОНОВ" },
+            { hint: "Гиганты пожирают людей, стены защищают человечество", word: "АТАКААТИТАНОВ" },
+            { hint: "Парень с супер-ударом один удар (One Punch)", word: "ВАНПАНЧМЕН" },
+            { hint: "Шинигами, ученик школы и духи", word: "БЛИЧ" },
+            { hint: "Волейбол, старшая школа Карасуно", `word`: "ВОЛЕЙБОЛ" }
         ];
 
         let currentLevelIndex = 0;
@@ -105,58 +131,78 @@
 
         function loadLevel() {
             selectedWord = "";
-            document.getElementById("currentWord").innerText = "___";
+            let currentObj = levels[currentLevelIndex];
+            
+            document.getElementById("animeHint").innerText = "💡 Подсказка: " + currentObj.hint;
+            document.getElementById("currentWord").innerText = "_".repeat(currentObj.word.length);
             document.getElementById("level").innerText = currentLevelIndex + 1;
             document.getElementById("score").innerText = score;
 
             let container = document.getElementById("letterContainer");
             container.innerHTML = "";
 
-            let currentLetters = levels[currentLevelIndex].letters;
-            // Тамгалардын ордун аралаштыруу
-            currentLetters.sort(() => Math.random() - 0.5);
+            // Перемешиваем буквы правильного слова + добавляем пару случайных
+            let lettersArr = currentObj.word.split("");
+            let extraLetters = ["А", "О", "И", "Е", "Н", "Т", "С", "Р"];
+            for(let i = 0; i < 3; i++) {
+                lettersArr.push(extraLetters[Math.floor(Math.random() * extraLetters.length)]);
+            }
+            lettersArr.sort(() => Math.random() - 0.5);
 
-            currentLetters.forEach(letter => {
+            lettersArr.forEach(letter => {
                 let btn = document.createElement("button");
                 btn.className = "letter-btn";
                 btn.innerText = letter;
-                btn.onclick = () => addLetter(letter);
+                btn.onclick = () => addLetter(letter, currentObj.word.length);
                 container.appendChild(btn);
             });
         }
 
-        function addLetter(letter) {
-            if (selectedWord.length < 3) {
+        function addLetter(letter, maxLength) {
+            let currentObj = levels[currentLevelIndex];
+            
+            if (selectedWord.length < currentObj.word.length) {
                 selectedWord += letter;
-                document.getElementById("currentWord").innerText = selectedWord;
+                let displayStr = selectedWord + "_".repeat(currentObj.word.length - selectedWord.length);
+                document.getElementById("currentWord").innerText = displayStr;
             }
         }
 
         function clearWord() {
             selectedWord = "";
-            document.getElementById("currentWord").innerText = "___";
+            let currentObj = levels[currentLevelIndex];
+            document.getElementById("currentWord").innerText = "_".repeat(currentObj.word.length);
+            document.getElementById("msgText").innerText = "";
         }
 
         function checkWord() {
-            let validWords = levels[currentLevelIndex].words;
-            if (validWords.includes(selectedWord)) {
-                score += 10;
-                alert("Туура! Молодец!");
+            let currentObj = levels[currentLevelIndex];
+            let msg = document.getElementById("msgText");
+            
+            if (selectedWord === currentObj.word) {
+                score += 20;
+                msg.style.color = "#2ecc71";
+                msg.innerText = "Верно! Отлично знаешь аниме!";
                 currentLevelIndex++;
-                if (currentLevelIndex < levels.length) {
-                    loadLevel();
-                } else {
-                    alert("Куттуктайм! Бардык деңгээлдерден өттүңүз!");
-                    currentLevelIndex = 0;
-                    loadLevel();
-                }
+                
+                setTimeout(() => {
+                    msg.innerText = "";
+                    if (currentLevelIndex < levels.length) {
+                        loadLevel();
+                    } else {
+                        msg.style.color = "#fdcb6e";
+                        msg.innerText = "Поздравляем! Ты настоящий отаку!";
+                        currentLevelIndex = 0;
+                        setTimeout(loadLevel, 3000);
+                    }
+                }, 1200);
             } else {
-                alert("Мындай сөз жок же ката! Кайра аракет кыл.");
-                clearWord();
+                msg.style.color = "#e94560";
+                msg.innerText = "Неправильно! Попробуй еще.";
+                setTimeout(() => { clearWord(); }, 1200);
             }
         }
 
-        // Башталышы
         loadLevel();
     </script>
 
